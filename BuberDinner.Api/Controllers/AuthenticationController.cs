@@ -1,5 +1,6 @@
 using BuberDinner.Application.Services.Authentication;
 using BuberDinner.Contracts.Authentication;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuberDinner.Api.Controllers;
@@ -16,10 +17,10 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("register")]
-    public IActionResult Register(RegisterRequest request)
+    public async Task<IActionResult> Register(RegisterRequest request)
     {
         var authResult =
-            _authenticationService.Register(request.FirstName, request.LastName, request.Email, request.Password);
+          await _authenticationService.Register(request.FirstName, request.LastName, request.Email, request.Password);
 
         var response = new AuthenticationResponse(
             authResult.Id,
@@ -32,10 +33,10 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("login")]
-    public IActionResult Login(LoginRequest request)
+    public async Task<IActionResult> Login(LoginRequest request)
     {
         var authResult =
-            _authenticationService.Login(request.Email, request.Password);
+            await _authenticationService.Login(request.Email, request.Password);
 
         var response = new AuthenticationResponse(
             authResult.Id,
