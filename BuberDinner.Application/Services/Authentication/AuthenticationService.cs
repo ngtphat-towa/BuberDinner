@@ -24,12 +24,18 @@ public class AuthenticationService : IAuthenticationService
             throw new Exception("User with given name already exists!");
         }
         // 2. Create User (Guid) id
-        var userId = Guid.NewGuid();
-
+        var user = new User
+        {
+            FirstName = firstName,
+            LastName = lastName,
+            Email = email,
+            Password = password
+        };
         // 3. Create Jwt token
-        var token = _jwtTokenGenerator.GenerateToken(userId, firstName, lastName);
+        var token = _jwtTokenGenerator.GenerateToken(user);
         return new AuthenticationResult(
-            userId, firstName, lastName, email, token);
+            user,
+            token);
     }
 
     public async Task<AuthenticationResult> Login(string email, string password)
@@ -42,18 +48,14 @@ public class AuthenticationService : IAuthenticationService
         }
         // 2. Validate password is correct
         // TODO: implement hasing password
-        if (!user.Password.Equals(password))
+        if (user.Password != password)
         {
-            throw new Exception("User with given credentail doesnt exits");
+            throw new Exception("Invalid password.");
         }
         // 3. Create Jwt token
-        var token = _jwtTokenGenerator.GenerateToken(
-            user.Id, user.FirstName, user.LastName);
+        var token = _jwtTokenGenerator.GenerateToken(user);
         return new AuthenticationResult(
-            user.Id,
-            user.FirstName,
-            user.LastName,
-            user.Email,
+            user,
             token);
     }
 }
