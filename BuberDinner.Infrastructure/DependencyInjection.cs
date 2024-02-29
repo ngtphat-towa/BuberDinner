@@ -17,8 +17,9 @@ namespace BuberDinner.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services,
-       ConfigurationManager configuration)
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        ConfigurationManager configuration)
     {
         // Auth
         services.AddAuth(configuration);
@@ -39,7 +40,6 @@ public static class DependencyInjection
         var jwtSettings = new JwtSettings();
         configuration.Bind(JwtSettings.SectionName, jwtSettings);
         services.AddSingleton(Options.Create(jwtSettings));
-
 
         // Auth services
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
