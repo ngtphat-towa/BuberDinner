@@ -1,0 +1,10 @@
+@Host = https://localhost:7207
+@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNDVhMjgyOS00OGU2LTRmMmUtYjc2Ny02MzY3ZWIyOWY4MGUiLCJnaXZlbl9uYW1lIjoiUGhhdCIsImZhbWlseV9uYW1lIjoiTmd1eWVuIiwianRpIjoiNGQxMzRlNGQtNDEyZi00N2YwLWI5NjktNTNiYzNkMWI1OWY2IiwiZXhwIjoxNzA5MjA0Njc4LCJpc3MiOiJCdWJlckRpbm5lciIsImF1ZCI6IkJ1YmJlckRpbm5lciJ9.UgbSJxGtYJV_BlqLrukIQXRqF1AE39vjWLnEiuDjxSY
+
+GET {{Host}}/dinners     
+Content-Type: application/json
+Authorization: Bearer {{Token}}
+
+{
+
+}
