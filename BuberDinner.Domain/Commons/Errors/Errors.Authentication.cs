@@ -7,7 +7,7 @@ public static partial class ErrorsFactory
     public static class Authentication
     {
         public static Error InvalidCredentials => Error.Validation(
-            code: "Auth.InvalidCred",
+            code: "Auth.InvalidCredentials",
             description: "Invalid credentials.");
 
         public static Error NotFoundEmail => Error.NotFound(
