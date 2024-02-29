@@ -1,27 +1,21 @@
 using BuberDinner.Application.Common.Interfaces.Authentication;
 using BuberDinner.Application.Common.Interfaces.Persistence;
+using BuberDinner.Domain.Commons.Errors;
 using BuberDinner.Domain.Entities;
+
+using ErrorOr;
 
 namespace BuberDinner.Application.Services.Authentication;
 
-public class AuthenticationService : IAuthenticationService
+public class AuthenticationService(IJwtTokenGenerator jwtTokenGenerator, IUserRepository userRepository)
+    : IAuthenticationService
 {
-    private readonly IJwtTokenGenerator _jwtTokenGenerator;
-    private readonly IUserRepository _userRepository;
-
-    public AuthenticationService(IJwtTokenGenerator jwtTokenGenerator, IUserRepository userRepository)
-    {
-        _jwtTokenGenerator = jwtTokenGenerator;
-        _userRepository = userRepository;
-    }
-
-    public async Task<AuthenticationResult> Register(string firstName, string lastName, string email, string password)
+    public async Task<ErrorOr<AuthenticationResult>> Register(string firstName, string lastName, string email, string password)
     {
         // 1. Validate the user doesn't exit
-        if (await _userRepository.GetUserByEmailAsync(email) is not null)
+        if (await userRepository.GetUserByEmailAsync(email) is not null)
         {
-            // TODO: Implement custom erorr handling
-            throw new Exception("User with given name already exists!");
+            return ErrorsFactory.User.DuplicateEmail;
         }
         // 2. Create User (Guid) id
         var user = new User
@@ -31,29 +25,30 @@ public class AuthenticationService : IAuthenticationService
             Email = email,
             Password = password
         };
+
+        await userRepository.AddUserAsync(user);
         // 3. Create Jwt token
-        var token = _jwtTokenGenerator.GenerateToken(user);
+        var token = jwtTokenGenerator.GenerateToken(user);
         return new AuthenticationResult(
             user,
             token);
     }
 
-    public async Task<AuthenticationResult> Login(string email, string password)
+    public async Task<ErrorOr<AuthenticationResult>> Login(string email, string password)
     {
         // 1. Validate user exists
-        if (await _userRepository.GetUserByEmailAsync(email) is not User user)
+        if (await userRepository.GetUserByEmailAsync(email) is not User user)
         {
-            // TODO: Implement custom erorr handling
-            throw new Exception("User with given credentail doesnt exits");
+            return ErrorsFactory.Authentication.NotFoundEmail;
         }
         // 2. Validate password is correct
         // TODO: implement hasing password
         if (user.Password != password)
         {
-            throw new Exception("Invalid password.");
+            return ErrorsFactory.Authentication.InvalidCredentials;
         }
         // 3. Create Jwt token
-        var token = _jwtTokenGenerator.GenerateToken(user);
+        var token = jwtTokenGenerator.GenerateToken(user);
         return new AuthenticationResult(
             user,
             token);
