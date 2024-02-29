@@ -13,16 +13,10 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace BuberDinner.Infrastructure.Authentication;
 
-public class JwtTokenGenerator : IJwtTokenGenerator
+public class JwtTokenGenerator(IDateTimeProvider dateTimeProvider, IOptions<JwtSettings> jwtOptions)
+    : IJwtTokenGenerator
 {
-    private readonly JwtSettings _jwtSettings;
-    private readonly IDateTimeProvider _dateTimeProvider;
-
-    public JwtTokenGenerator(IDateTimeProvider dateTimeProvider, IOptions<JwtSettings> jwtOptions)
-    {
-        _dateTimeProvider = dateTimeProvider;
-        _jwtSettings = jwtOptions.Value;
-    }
+    private readonly JwtSettings _jwtSettings = jwtOptions.Value;
 
     public string GenerateToken(User user)
     {
@@ -42,7 +36,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         var securityToken = new JwtSecurityToken(
             issuer: _jwtSettings.Issuer,
             audience: _jwtSettings.Audience,
-            expires: _dateTimeProvider.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
+            expires: dateTimeProvider.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
             claims: claims,
             signingCredentials: signingCredentials);
 
