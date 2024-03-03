@@ -1,4 +1,6 @@
-namespace BuberDinner.Domain.Commons.Models;
+using BuberDinner.Domain.Commons.Models;
+
+namespace BuberDinner.Domain.Commons.ValueObjects;
 
 public class Price : ValueObject
 {
