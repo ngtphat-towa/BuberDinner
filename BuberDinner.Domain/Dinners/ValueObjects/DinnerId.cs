@@ -1,5 +1,3 @@
-using BuberDinner.Domain.Commons.Models;
-
 namespace BuberDinner.Domain.Dinners.ValueObjects;
 
 public sealed class DinnerId : AggregateRootId<Guid>

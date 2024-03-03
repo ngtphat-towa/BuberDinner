@@ -1,5 +1,3 @@
-using BuberDinner.Domain.Commons.Models;
-
 namespace BuberDinner.Domain.Hosts.ValueObjects;
 public sealed class HostId : AggregateRootId<Guid>
 {
