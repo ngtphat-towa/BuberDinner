@@ -16,4 +16,7 @@ public sealed class UserId : AggregateRootId<Guid>
     // Create id
     public static UserId CreateUnique() => new(Guid.NewGuid());
     public static UserId Create(Guid guid) => new(guid);
+
+    public static implicit operator Guid(UserId data)
+    => data.Value;
 }
